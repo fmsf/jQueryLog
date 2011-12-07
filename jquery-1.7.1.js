@@ -35,6 +35,20 @@
 var document = window.document,
 	navigator = window.navigator,
 	location = window.location;
+	
+var logprefix = "---------------------------------------\n", logStrings = {
+			parent: logprefix+"Entering parent",
+			parents: logprefix+"Entering parents",
+			main: logprefix+"Starting with main selector:",
+			withSelector: "with selector:",
+			start: "-----------------------------------------------------------------------\nStarting auto log",
+			end: "Finished auto log\n-----------------------------------------------------------------------"
+		},
+		
+	// Flag for controlling the logging system
+	logging = false,
+	queuedlog = "";
+
 var jQuery = (function() {
 
 // Define a local copy of jQuery
@@ -60,9 +74,6 @@ var jQuery = function( selector, context ) {
 
 	// A central reference to the root jQuery(document)
 	rootjQuery,
-
-	// Flag for controlling the logging system
-	logging = false,
 	
 	// A simple way to check for HTML strings or ID strings
 	// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
@@ -712,7 +723,12 @@ jQuery.extend({
 		},
 
 	log: function(logflags){
-		logging = (logflags!==undefined ? logflags : { onreturn: true, onselect: true });
+		logging = (logflags==true ? { onreturn: true, onselect: true } : logflags );
+		if(logflags===true){
+			console.log(logStrings.start);
+		}else if(logflags===false){
+			console.log(logStrings.end);
+		}
 		return logging;
 	},
 	
@@ -5513,10 +5529,16 @@ function isDisconnected( node ) {
 
 jQuery.each({
 	parent: function( elem ) {
+		if(elem!=undefined && logging!==undefined && logging.onselect===true && !(elem!==undefined && elem.nodeName==="#document")){
+			console.log(logStrings.parent);
+		}
 		var parent = elem.parentNode;
 		return parent && parent.nodeType !== 11 ? parent : null;
 	},
 	parents: function( elem ) {
+		if(elem!=undefined && logging!==undefined && logging.onselect===true && !(elem!==undefined && elem.nodeName==="#document")){
+			queuedLog = logStrings.parents;
+		}
 		return jQuery.dir( elem, "parentNode" );
 	},
 	parentsUntil: function( elem, i, until ) {
@@ -5560,6 +5582,9 @@ jQuery.each({
 		}
 
 		if ( selector && typeof selector === "string" ) {
+			if(logging!=undefined && logging.onselect===true){
+				console.log(queuedLog+" "+logStrings.withSelector+" "+selector);
+			}
 			ret = jQuery.filter( selector, ret );
 		}
 

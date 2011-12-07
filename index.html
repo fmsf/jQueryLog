@@ -5,11 +5,14 @@
 	$(document).ready(function(){
 		//console.log($(".t4"))
 		//console.log($("#foo").parents(".t1").find(".t2:last .t4:last"));
-		$.log();
-		//console.log($("#foo").parents(".t1"));
-		console.log($("#foo").parents(".t1").find(".t2:last .t4:last"));
+		$.log(true);
+		$("#foo").parents(".t1").parent().find(".t2:last .t4:last").text("teste");
 		$.log(false);
+		 
+		console.log($("#foo").parents(".t1").parent().find(".t2:last .t4:last"));
 		
+		console.log($("#foo"));
+		console.log($("#foo").parents(".t1"));
 		console.log($("#foo").parents(".t1").find(".t2:last .t4:last"));
 	});
 </script>
