@@ -1,0 +1,57 @@
+<html>
+
+<script type="text/javascript" src="jquery-1.7.1.js"></script>
+<script>
+	$(document).ready(function(){
+		//console.log($(".t4"))
+		//console.log($("#foo").parents(".t1").find(".t2:last .t4:last"));
+		$.log();
+		//console.log($("#foo").parents(".t1"));
+		console.log($("#foo").parents(".t1").find(".t2:last .t4:last"));
+		$.log(false);
+		
+		console.log($("#foo").parents(".t1").find(".t2:last .t4:last"));
+	});
+</script>
+<body>
+
+	<div class="t1">
+		<div class="t2">
+			<div id="foo" class="t3">
+				
+			</div>
+			<div class="t4">
+			
+			</div>
+		</div>
+		<div class="t2">
+			<div class="t4">
+			
+			</div>
+			<div class="t4">
+				bar
+			</div>
+		</div>
+		
+	</div>
+	<div class="t1">
+			<div class="t2">
+				<div id="bla" class="t3">
+					
+				</div>
+				<div class="t4">
+				
+				</div>
+			</div>
+			<div class="t2">
+				<div class="t4">
+				
+				</div>
+				<div class="t4">
+					bar
+				</div>
+			</div>
+			
+		</div>
+</body>
+</html>
