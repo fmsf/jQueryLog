@@ -27,6 +27,7 @@
   * This version is for use while you are developing your apps/sites ONLY!
   * For production please use the original minified jQuery.
   * It's much smaller and your users don't need the logging system ;)
+  * (unless you wait till I add support for loging via ajax)
   */
   
 (function( window, undefined ) {
@@ -36,18 +37,37 @@ var document = window.document,
 	navigator = window.navigator,
 	location = window.location;
 	
-var logprefix = "---------------------------------------\n", logStrings = {
+var logprefix = "---------------------------------------\n", 
+		logStrings = {
 			parent: logprefix+"Entering parent",
 			parents: logprefix+"Entering parents",
-			main: logprefix+"Starting with main selector:",
+			parentsUntil: logprefix+"Entering parentsUntil with selector:",
+			nextUntil: logprefix+"Entering nextUntil with selector:",
+			prevUntil: logprefix+"Entering nextUntil with selector:",
+			untilSelector: "until selector:",
+			main: "\n"+logprefix+"Starting with main selector:",
+			next: logprefix+"Entering next with:",
+			prev: logprefix+"Entering prev with:",
+			nextAll: logprefix+"Entering nextAll with:",
+			prevAll: logprefix+"Entering prevAll with:",
+			sibilings: logprefix+"Entering siblings with:",
+			children:  logprefix+"Entering children with:",
+			result: "Result:",
 			withSelector: "with selector:",
-			start: "-----------------------------------------------------------------------\nStarting auto log",
+			start: "\n\n\n\n\n-----------------------------------------------------------------------\nStarting auto log",
 			end: "Finished auto log\n-----------------------------------------------------------------------"
 		},
 		
 	// Flag for controlling the logging system
 	logging = false,
 	queuedlog = "";
+	
+var verify = function(elem){
+	if(elem!=undefined && logging!==undefined && logging.onselect===true && !(elem!==undefined && elem.nodeName==="#document")){
+		return true;
+	}
+	return false;
+}	
 
 var jQuery = (function() {
 
@@ -56,11 +76,17 @@ var jQuery = function( selector, context ) {
 		// The jQuery object is actually just the init constructor 'enhanced'
 		// Log the selector if requested
 		if(selector!=undefined && logging!==undefined && logging.onselect===true && !(selector!==undefined &&selector.nodeName==="#document")){
-			console.log(selector);
+			if(typeof selector === "string"){
+				console.log(logStrings.main+" "+selector);
+			} else {
+				console.log(logStrings.main);
+				console.log(selector);
+			}
 		}
 		var aux = new jQuery.fn.init( selector, context, rootjQuery );
 		// Log the return value if requested
 		if(logging!==undefined && logging.onreturn===true && !(aux[0]!==undefined && aux[0].nodeName==="#document")){
+			console.log(logStrings.result);
 			console.log(aux);
 		}
 		return aux;
@@ -5529,43 +5555,91 @@ function isDisconnected( node ) {
 
 jQuery.each({
 	parent: function( elem ) {
-		if(elem!=undefined && logging!==undefined && logging.onselect===true && !(elem!==undefined && elem.nodeName==="#document")){
+		if(verify(elem)){
 			console.log(logStrings.parent);
 		}
 		var parent = elem.parentNode;
 		return parent && parent.nodeType !== 11 ? parent : null;
 	},
 	parents: function( elem ) {
-		if(elem!=undefined && logging!==undefined && logging.onselect===true && !(elem!==undefined && elem.nodeName==="#document")){
+		if(verify(elem)){
 			queuedLog = logStrings.parents;
 		}
 		return jQuery.dir( elem, "parentNode" );
 	},
 	parentsUntil: function( elem, i, until ) {
+		if(verify(elem) && until!==undefined){
+			if(typeof until === "string"){
+				console.log(logStrings.parentsUntil +" "+ until);
+			}else{
+				console.log(logStrings.parentsUntil);
+				console.log(until);
+			}
+		}
 		return jQuery.dir( elem, "parentNode", until );
 	},
 	next: function( elem ) {
+		if(verify(elem)){
+			console.log(logStrings.next);
+			console.log(elem);
+		}
 		return jQuery.nth( elem, 2, "nextSibling" );
 	},
 	prev: function( elem ) {
+		if(verify(elem)){
+			console.log(logStrings.prev);
+			console.log(elem);
+		}
 		return jQuery.nth( elem, 2, "previousSibling" );
 	},
 	nextAll: function( elem ) {
+		if(verify(elem)){
+			console.log(logStrings.nextAll);
+			console.log(elem);
+		}
 		return jQuery.dir( elem, "nextSibling" );
 	},
 	prevAll: function( elem ) {
+		if(verify(elem)){
+			console.log(logStrings.prevAll);
+			console.log(elem);
+		}
 		return jQuery.dir( elem, "previousSibling" );
 	},
 	nextUntil: function( elem, i, until ) {
+		if(verify(elem) && until!==undefined){
+			if(typeof until === "string"){
+				console.log(logStrings.nextUntil +" "+ until);
+			}else{
+				console.log(logStrings.nextUntil);
+				console.log(until);
+			}
+		}
 		return jQuery.dir( elem, "nextSibling", until );
 	},
 	prevUntil: function( elem, i, until ) {
+		if(verify(elem) && until!==undefined){
+			if(typeof until === "string"){
+				console.log(logStrings.prevUntil +" "+ until);
+			}else{
+				console.log(logStrings.prevUntil);
+				console.log(until);
+			}
+		}
 		return jQuery.dir( elem, "previousSibling", until );
 	},
 	siblings: function( elem ) {
+		if(verify(elem)){
+			console.log(logStrings.sibilings);
+			console.log(elem);
+		}
 		return jQuery.sibling( elem.parentNode.firstChild, elem );
 	},
 	children: function( elem ) {
+		if(verify(elem)){
+			console.log(logStrings.children);
+			console.log(elem);
+		}
 		return jQuery.sibling( elem.firstChild );
 	},
 	contents: function( elem ) {

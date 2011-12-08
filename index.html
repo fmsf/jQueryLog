@@ -6,7 +6,9 @@
 		//console.log($(".t4"))
 		//console.log($("#foo").parents(".t1").find(".t2:last .t4:last"));
 		$.log(true);
-		$("#foo").parents(".t1").parent().find(".t2:last .t4:last").text("teste");
+		$("#foo").parents(".t1").next().prev().parent().find(".t2:last .t4:last").text("teste");
+		console.log("\n\n\n");
+		$("#foo").parents(".t1").text(".");
 		$.log(false);
 		 
 		console.log($("#foo").parents(".t1").parent().find(".t2:last .t4:last"));
@@ -40,10 +42,10 @@
 	<div class="t1">
 			<div class="t2">
 				<div id="bla" class="t3">
+									
+					<div class="t4">
 					
-				</div>
-				<div class="t4">
-				
+					</div>
 				</div>
 			</div>
 			<div class="t2">
