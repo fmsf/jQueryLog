@@ -39,19 +39,27 @@ var document = window.document,
 	
 var logprefix = "---------------------------------------\n", 
 		logStrings = {
-			parent: logprefix+"Entering parent",
-			parents: logprefix+"Entering parents",
-			parentsUntil: logprefix+"Entering parentsUntil with selector:",
-			nextUntil: logprefix+"Entering nextUntil with selector:",
-			prevUntil: logprefix+"Entering nextUntil with selector:",
+			parent: logprefix+"Entering 'parent'",
+			parents: logprefix+"Entering 'parents'",
+			parentsUntil: logprefix+"Entering 'parentsUntil' with selector:",
+			nextUntil: logprefix+"Entering 'nextUntil' with selector:",
+			prevUntil: logprefix+"Entering 'nextUntil' with selector:",
 			untilSelector: "until selector:",
 			main: "\n"+logprefix+"Starting with main selector:",
-			next: logprefix+"Entering next with:",
-			prev: logprefix+"Entering prev with:",
-			nextAll: logprefix+"Entering nextAll with:",
-			prevAll: logprefix+"Entering prevAll with:",
-			sibilings: logprefix+"Entering siblings with:",
-			children:  logprefix+"Entering children with:",
+			next: logprefix+"Entering 'next' with:",
+			prev: logprefix+"Entering 'prev' with:",
+			nextAll: logprefix+"Entering 'nextAll' with:",
+			prevAll: logprefix+"Entering 'prevAll' with:",
+			sibilings: logprefix+"Entering 'siblings' with:",
+			children:  logprefix+"Entering 'children' with:",
+			find: logprefix+"Entering 'find' with selector:",
+			findObject: logprefix+"Entering 'find' with object:",
+			has: logprefix+"Entering 'has' with target:",
+			hasReturn: "Returned with:",
+			is: logprefix+"Entering 'is' with selector:",
+			isReturned: "returned",
+			not: logprefix+"Entering 'not' with selector:",
+			filter: logprefix+"Entering 'filter' with selector:",
 			result: "Result:",
 			withSelector: "with selector:",
 			start: "\n\n\n\n\n-----------------------------------------------------------------------\nStarting auto log",
@@ -60,6 +68,8 @@ var logprefix = "---------------------------------------\n",
 		
 	// Flag for controlling the logging system
 	logging = false,
+	mainDisabeled = false;
+	findDisabeled = false;
 	queuedlog = "";
 	
 var verify = function(elem){
@@ -75,7 +85,7 @@ var jQuery = (function() {
 var jQuery = function( selector, context ) {
 		// The jQuery object is actually just the init constructor 'enhanced'
 		// Log the selector if requested
-		if(selector!=undefined && logging!==undefined && logging.onselect===true && !(selector!==undefined &&selector.nodeName==="#document")){
+		if(mainDisabeled==false && (selector!=undefined && logging!==undefined && logging.onselect===true && !(selector!==undefined &&selector.nodeName==="#document"))){
 			if(typeof selector === "string"){
 				console.log(logStrings.main+" "+selector);
 			} else {
@@ -85,7 +95,7 @@ var jQuery = function( selector, context ) {
 		}
 		var aux = new jQuery.fn.init( selector, context, rootjQuery );
 		// Log the return value if requested
-		if(logging!==undefined && logging.onreturn===true && !(aux[0]!==undefined && aux[0].nodeName==="#document")){
+		if(mainDisabeled==false && (logging!==undefined && logging.onreturn===true && !(aux[0]!==undefined && aux[0].nodeName==="#document"))){
 			console.log(logStrings.result);
 			console.log(aux);
 		}
@@ -5400,6 +5410,10 @@ jQuery.fn.extend({
 			i, l;
 
 		if ( typeof selector !== "string" ) {
+			if(!findDisabeled && verify(selector)){
+				console.log(logStrings.findObject);
+				console.log(selector);
+			}
 			return jQuery( selector ).filter(function() {
 				for ( i = 0, l = self.length; i < l; i++ ) {
 					if ( jQuery.contains( self[ i ], this ) ) {
@@ -5407,6 +5421,9 @@ jQuery.fn.extend({
 					}
 				}
 			});
+		}
+		if(!findDisabeled && verify(selector)){
+			console.log(logStrings.find+" "+selector);
 		}
 
 		var ret = this.pushStack( "", "find", selector ),
@@ -5433,8 +5450,17 @@ jQuery.fn.extend({
 	},
 
 	has: function( target ) {
+		findDisabeled = true;
+		mainDisabeled = true;
+		if(verify(target)){
+			console.log(logStrings.has);
+			console.log(target);
+		}		
 		var targets = jQuery( target );
-		return this.filter(function() {
+		var returned = this.filter(function() {
+		findDisabeled = false;
+		mainDisabeled = false;	
+		return returned;
 			for ( var i = 0, l = targets.length; i < l; i++ ) {
 				if ( jQuery.contains( this, targets[i] ) ) {
 					return true;
@@ -5444,15 +5470,24 @@ jQuery.fn.extend({
 	},
 
 	not: function( selector ) {
+		if(verify(selector)){
+			console.log(logStrings.not+" "+selector);
+		}
 		return this.pushStack( winnow(this, selector, false), "not", selector);
 	},
 
 	filter: function( selector ) {
+		if(verify(selector)){
+			console.log(logStrings.filter+" "+selector);
+		}
 		return this.pushStack( winnow(this, selector, true), "filter", selector );
 	},
 
 	is: function( selector ) {
-		return !!selector && ( 
+		if(verify(selector)){
+			console.log(logStrings.is+" "+selector);
+		}
+		var returned =!!selector && ( 
 			typeof selector === "string" ?
 				// If this is a positional selector, check membership in the returned set
 				// so $("p:first").is("p:last") won't return true for a doc with two "p".
@@ -5460,6 +5495,9 @@ jQuery.fn.extend({
 					jQuery( selector, this.context ).index( this[0] ) >= 0 :
 					jQuery.filter( selector, this ).length > 0 :
 				this.filter( selector ).length > 0 );
+		if(verify(selector)){
+			console.log(logStrings.isReturned+" "+returned);
+		}
 	},
 
 	closest: function( selectors, context ) {
