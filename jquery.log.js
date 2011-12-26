@@ -50,7 +50,6 @@
 		};
 		
 		
-		
 		// replace all functions with correct log outputs (ordered by inputs)
 		// the reason why every one is copied one by one is to guarantee we can customize the logging
 		// depending on the arguments given or collection these functions belong to.
@@ -64,7 +63,14 @@
 							"prevAll",
 							"siblings",
 							"children",
-							"contents"];
+							"contents",
+							"find",
+							"has", 
+							"not", 
+							"filter", 
+							"is", 
+							"index", 
+							"add"];
 		for(var i=0;i<localNames.length;i++){
 			(function(){
 				var name = localNames[i];
@@ -100,6 +106,8 @@
 			})();
 		}
 		
+		// missing from group: closest, andSelft
+
 		
 		// all others till I have time to manually do them all
 		for(var localName in jQuery.fn){
