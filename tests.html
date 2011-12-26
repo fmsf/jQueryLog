@@ -1,0 +1,112 @@
+<html>
+
+<script type="text/javascript" src="jquery-1.7.1.js"></script>
+<script>
+	(function(){
+		var c = console,
+			indentLevel = 0,
+			doLog = false,
+			//fn = $.extend({},
+			log = function(fname, selector , returned ){
+				var indent = "";
+				for(var i=0;i<indentLevel;i++){
+					indent+="\t";
+				}
+				c.log(indent+ fname+"("+ ((typeof selector==="string") ? "'%s'" : "%o") +"): %o", selector , returned);
+			};
+			var $jq = (jQuery!==undefined ? jQuery : $);
+			
+		// special treatment for main selector
+		$ = function(selector, context){
+			indentLevel = 0;
+			var returned = $jq(selector,context);
+			log("$",(context===undefined ? selector : selector+" -> "+ context), returned);
+			return returned;
+		};
+		
+		// first copy all function names to guarantee we don't destroy anything
+		
+		// replace all functions with correct log outputs (ordered by inputs)
+		var localNames=   ["parent",
+							"parents",
+							"parentsUntil",
+							"next",
+							"prev",
+							"nextAll",
+							"prevAll",
+							"siblings",
+							"children",
+							"contents"];
+		for(var i=0;i<localNames.length;i++){
+			(function(){
+				var name = localNames[i]
+				var f = jQuery.fn[name];
+				jQuery.fn[localNames[i]] = function(elem){
+					indentLevel++;
+					var returned = f.apply(this,arguments);
+					log(name,elem, returned);
+					return returned;
+				};
+			})();
+		}
+		
+		$.log = function(l){
+			doLog = l;
+		}
+		
+		//jQuery = $;
+	
+	
+	})();
+
+	$(document).ready(function(){
+		//console.log($(".t4"))
+		//console.log($("#foo").parents(".t1").find(".t2:last .t4:last"));
+		$.log(true);
+		//$("#foo").parents(".t1").next().prev().parent().find(".t2:last .t4:last").text("teste");
+		var t = $("#foo").parents(".t1").next().prev().addClass(".t5");
+		$.log(false);
+	});
+</script>
+<body>
+
+	<div class="t1">
+		<div class="t2">
+			<div id="foo" class="t3">
+				
+			</div>
+			<div class="t4">
+			
+			</div>
+		</div>
+		<div class="t2">
+			<div class="t4">
+			
+			</div>
+			<div class="t4">
+				bar
+			</div>
+		</div>
+		
+	</div>
+	<div class="t1">
+			<div class="t2">
+				<div id="bla" class="t3">
+									
+					<div class="t4">
+					
+					</div>
+				</div>
+			</div>
+			<div class="t2">
+				<div class="t4">
+				
+				</div>
+				<div class="t4">
+					bar
+				</div>
+			</div>
+			
+		</div>
+</body>
+</html>
