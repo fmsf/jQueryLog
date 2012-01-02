@@ -1,33 +1,40 @@
-How to use it
-======
+How to use it:
 Simply place the jquery.log.js bellow your jquery file. And call $.log(true) or $.log(false) whenever you want to activate/deactivate the logging system.
-```html
+
 <script type="text/javascript" src="jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="jquery.log.js"></script>		
-```
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 I'm trying to do a "smart" logging system. Meaning that I want this to simplfy my life when developing javascript with jQuery, not complicate it. So I've tried to keep it simple.
-```
+
+
+
 $.log(true); // starts the logging system
 	$("#foo").parents(".t1").next().prev().parent().find(".t2:last .t4:last").text("test");
 $.log(false); // ends the logging system
-```
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 The results will be something like this: (the objects are clickable inside the console)
-```
+
+
 $('#foo'): [<div id="foo" class="t3"></div>]
     parents('.t1'): [ <div class="t1">…</div> ]
         next(undefined): [ <div class="t1">…</div> ]
             prev(undefined): [ <div class="t1">…</div> ]
                 parent(undefined): [ <body>…</body> ]
                     find('.t2:last .t4:last'): [<div class="t4">teste</div>]
-```
+
+					
+					
 This has been tested against the official jQuery unit tests and it currently passes all except the "(6.3) core no conflict $" (which means if you use some other lib that overwrites $, it won't work with jquery log). I'll address this issue later, but most users shouldn't be affected by it.
 
 I've had a discussion with Prinzhorn when I released the first version of this and meanwhile he made his own, which is also cool, you can find it at: https://github.com/Prinzhorn/jquery-inlog/ 
 
-The jquery unit tests output the following supported functions:
-======
 
-```
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+The jquery unit tests output the following supported functions:
 add('#ap'); 
 	add('#en'); 
 	add('#sap'); 
