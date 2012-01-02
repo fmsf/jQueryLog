@@ -42,7 +42,7 @@
 			var $jq = (jQuery!==undefined ? jQuery : $);
 			
 		// special treatment for main selector
-		$ = function(selector, context){
+		$.constructor = function(selector, context){
 			indentLevel = 0;
 			var returned = $jq(selector,context);
 			log("\n$",(context===undefined ? selector : selector+" -> "+ context), returned);
